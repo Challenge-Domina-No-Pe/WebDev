@@ -1,0 +1,1 @@
+export default function Estatisticas() { return <h1 className="text-3xl font-bold">Estatísticas - Copa PAB</h1>; }

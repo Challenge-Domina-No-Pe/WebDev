@@ -1,0 +1,1 @@
+export default function Contato() { return <h1 className="text-3xl font-bold">Contato</h1>; }

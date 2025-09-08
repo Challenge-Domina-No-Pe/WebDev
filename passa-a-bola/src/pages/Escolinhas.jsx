@@ -1,0 +1,1 @@
+export default function Escolinhas() { return <h1 className="text-3xl font-bold">Escolinhas</h1>; }

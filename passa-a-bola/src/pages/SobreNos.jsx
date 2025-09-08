@@ -1,0 +1,1 @@
+export default function SobreNos() { return <h1 className="text-3xl font-bold">Sobre Nós</h1>; }

@@ -1,0 +1,1 @@
+export default function Peneiras() { return <h1 className="text-3xl font-bold">Peneiras</h1>; }
