@@ -8,27 +8,16 @@ export default function Login() {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const from = location.state?.from?.pathname || "/";
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError(''); 
-    if (email === 'godinho@fiap.com.br' && password === '123') {
-      console.log('Login bem-sucedido!');
-      const userData = { 
-        id: '1', 
-        name: 'João Pedro Godinho', 
-        email: email 
-      };
-      
-      login(userData); 
-      navigate(from, { replace: true }); 
-
-    } else {
-      console.error('Falha no login: credenciais inválidas');
-      setError('E-mail ou senha inválidos. Tente novamente.');
+    setError('');
+    try {
+      await login(email, password);
+      navigate('/');
+    } catch (err) {
+      setError('Falha ao fazer login. Verifique suas credenciais.');
+      console.error(err.message);
     }
   };
 
