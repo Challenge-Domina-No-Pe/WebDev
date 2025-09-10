@@ -35,8 +35,20 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email, password) => {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const loggedInUser = userCredential.user;
+
+    const userDocRef = doc(db, "users", loggedInUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      setUser({ ...loggedInUser, ...userDocSnap.data() });
+    } else {
+      setUser(loggedInUser);
+    }
+    
+    return userCredential;
   };
   
   const signup = async (email, password, additionalData) => {
@@ -48,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       email: email,
       ...additionalData, 
     });
-    
+    setUser({ ...user, ...additionalData });
     return userCredential;
   };
 
