@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContexts';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import logo from '../assets/Dominalogo.png'
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -22,53 +23,70 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-        
-        <h2 className="text-2xl font-bold mb-2 text-center text-gray-800">Bem-vindo de Volta!</h2>
-        <p className="text-center text-gray-500 mb-6">Faça login para continuar</p>
-        
-        {error && <p className="bg-red-100 text-red-700 text-sm text-center p-3 rounded-lg mb-4">{error}</p>}
-        
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 mb-2 font-semibold">Usuário</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="Digite seu e-mail"
-            required
-          />
-        </div>
-        
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 mb-2 font-semibold">Senha</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="Digite sua senha"
-            required
-          />
-        </div>
-        
-        <button type="submit" className="w-full bg-[#2D065A] text-white py-3 rounded-lg hover:bg-purple-800 transition font-bold text-lg">
-          Entrar
-        </button>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      {/* Logo */}
+      <img
+        src={logo}
+        alt="Passa a Bola"
+        className="w-24 h-24 object-contain mb-6"
+      />
 
-        <div className="text-center mt-6">
-            <p className="text-sm text-gray-600">
-                Não tem uma conta?{' '}
-                <Link to="/criar-conta" className="font-semibold text-purple-700 hover:underline">
-                    Crie uma agora
-                </Link>
-            </p>
-        </div>
-      </form>
+      {/* Card do login */}
+      <div className="bg-purple-200 shadow-lg rounded-2xl p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold text-center text-purple-600 mb-6">
+          Bem-vindo de Volta!
+        </h1>
+
+        {/* Exibe a mensagem de erro, se houver */}
+        {error && <p className="bg-red-100 text-red-700 text-sm text-center p-3 rounded-lg mb-4">{error}</p>}
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Usuário
+            </label>
+            <input
+              type="email"
+              placeholder="Digite seu e-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2 focus:border-purple-500 focus:ring-purple-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Senha
+            </label>
+            <input
+              type="password"
+              placeholder="Digite sua senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2 focus:border-purple-500 focus:ring-purple-500"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition font-bold"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Não tem conta ainda?{" "}
+          <Link
+            to="/criar-conta"
+            className="text-purple-600 font-bold hover:underline"
+          >
+            Criar conta
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

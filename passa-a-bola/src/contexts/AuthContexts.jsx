@@ -5,7 +5,8 @@ import {
   createUserWithEmailAndPassword, 
   signOut 
 } from "firebase/auth";
-import { auth } from '../firebase/config';
+import { doc, setDoc } from "firebase/firestore"; 
+import { auth, db } from '../firebase/config';
 
 const AuthContext = createContext(null);
 
@@ -25,8 +26,17 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
   
-  const signup = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signup = async (email, password, additionalData) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      email: email,
+      ...additionalData, 
+    });
+    
+    return userCredential;
   };
 
   const logout = () => {
@@ -40,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
   };
-  
+
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
