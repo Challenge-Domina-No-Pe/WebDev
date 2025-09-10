@@ -20,7 +20,7 @@ export default function Sidebar() {
       <div>
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold">Passa a Bola</h1>
-          {user && <p className="text-sm text-purple-300 mt-2">Bem-vindo, {user.name}!</p>}
+          {user && <p className="text-sm text-purple-300 mt-2">Bem-vindo, {user.username}!</p>}
         </div>
         <nav className="flex flex-col gap-4">
           <NavLink to="/" style={({ isActive }) => isActive ? activeLinkStyle : undefined} className="p-3 rounded-md hover:bg-purple-800 transition-colors">Home</NavLink>

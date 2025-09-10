@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword, 
   signOut 
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc, getDoc } from "firebase/firestore"; 
 import { auth, db } from '../firebase/config';
 
 const AuthContext = createContext(null);
@@ -15,8 +15,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser){
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          setUser({
+            ...currentUser,
+            ...userDocSnap.data()
+          })
+        } else{
+          setUser(currentUser);
+        }
+      } else{
+        setUser(null);
+      }
       setLoading(false);
     });
     return () => unsubscribe();
