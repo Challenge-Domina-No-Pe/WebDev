@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import MainLayout from "../pages/layout/MainLayout";
 import CopaPabLayout from "../pages/layout/CopaPabLayout";
@@ -13,10 +13,13 @@ import Escolinhas from "../pages/Escolinhas";
 import SobreNos from "../pages/SobreNos";
 import Contato from "../pages/Contato";
 import CopaPabHome from "../pages/CopaPAB/CopaPabHome";
-import Jogos from "../pages/CopaPAB/Jogos";
-import Estatisticas from "../pages/CopaPAB/Estatisticas";
-import Fotos from "../pages/CopaPAB/Fotos";
 import PageNotFound from "../pages/PageNotFound";
+import ListaJogos from "../pages/ListaJogos";
+import Noticias from "../pages/Noticias";
+import TabelaCompeticao1 from "../pages/CopaPAB/Competicao1/Tabela";
+import TimesCompeticao1 from "../pages/CopaPAB/Competicao1/Times";
+import EstatisticasCompeticao1 from "../pages/CopaPAB/Competicao1/Estatisticas";
+import FotosCompeticao1 from "../pages/CopaPAB/Competicao1/Fotos";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +44,14 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "noticias",
+        element: <Noticias />,
+      },
+      {
+        path: "jogos",
+        element: <ListaJogos />,
+      },
+      {
         path: "peneiras",
         element: <Peneiras />,
       },
@@ -58,23 +69,18 @@ export const router = createBrowserRouter([
       },
       {
         path: "copa-pab",
-        element: <CopaPabLayout />, 
+        element: <CopaPabLayout />,
         children: [
+          { index: true, element: <CopaPabHome /> },
           {
-            index: true,
-            element: <CopaPabHome />,
-          },
-          {
-            path: "jogos",
-            element: <Jogos />,
-          },
-          {
-            path: "estatisticas",
-            element: <Estatisticas />,
-          },
-          {
-            path: "fotos",
-            element: <Fotos />,
+            path: "competicao1",
+            children: [
+              { path: "tabela/grupos", element: <Navigate to="../tabela" replace /> },
+              { path: "tabela", element: <TabelaCompeticao1 /> },
+              { path: "times", element: <TimesCompeticao1 /> },
+              { path: "estatisticas", element: <EstatisticasCompeticao1 /> },
+              { path: "fotos", element: <FotosCompeticao1 /> },
+            ],
           },
         ],
       },

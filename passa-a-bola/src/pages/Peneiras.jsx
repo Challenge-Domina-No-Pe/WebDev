@@ -1,73 +1,101 @@
-import { useState } from "react";
+import { useState } from 'react';
+import PeneirasCard from "../components/PeneirasCard";
+import PeneiraModal from '../components/PeneiraModal';
 import Footer from "../components/Footer";
-import logo from "../assets/Dominalogo.png";
-import Peneira1 from "../assets/Peneira1.png";
-import Peneira2 from "../assets/Peneira2.png";
 
-export default function Peneiras() {
-  const [location, setLocation] = useState("");
+const Peneiras = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPeneira, setSelectedPeneira] = useState(null);
+
+  const peneirasList = [
+    {
+      id: 1,
+      title: "Peneira do Futuro FC",
+      date: "15 de Outubro de 2025",
+      location: "Estádio Municipal de Osasco, SP",
+      requirements: "Nascidas entre 2005 e 2010. Levar chuteira e RG.",
+      description: "Venha participar da peneira do Futuro FC! Uma grande oportunidade para jovens talentos mostrarem seu futebol e conquistarem uma vaga no nosso time. Não perca!",
+      link: "#",
+    },
+    {
+      id: 2,
+      title: "Seleção para o Time Sub-17",
+      date: "05 de Novembro de 2025",
+      location: "Centro de Treinamento da Capital, SP",
+      requirements: "Nascidas entre 2008 e 2009. Inscrição prévia obrigatória.",
+      description: "A seleção para o time Sub-17 está aberta! Se você tem talento e paixão pelo futebol, esta é sua chance de fazer parte de uma equipe vencedora.",
+      link: "#",
+    },
+    {
+      id: 3,
+      title: "Oportunidade no Clube Atlântico",
+      date: "20 de Novembro de 2025",
+      location: "Campo da Cidade Esportiva, SP",
+      requirements: "Nascidas entre 2000 e 07. Trazer atestado médico.",
+      description: "O Clube Atlântico busca novos talentos para reforçar suas categorias de base. Participe da nossa peneira e venha fazer história conosco!",
+      link: "#",
+    },
+  ];
+
+  const filteredPeneiras = peneirasList.filter(peneira =>
+    peneira.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleCardClick = (peneira) => {
+    setSelectedPeneira(peneira);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPeneira(null);
+  };
 
   return (
-    <div className="flex flex-col min-h-screen w-full">
-      <main className="flex-grow flex flex-col items-center justify-start p-6">
-        <div className="flex flex-col items-center gap-4 mt-4">
-          <img
-            src={logo} 
-            alt="Domina no pé"
-            className="w-40"
-          />
-          <h2 className="text-2xl font-semibold text-gray-800 text-center">
-            Encontre peneiras perto de você
-          </h2>
-        </div>
+    <div className="p-4 md:p-8">
+      <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">Peneiras</h1>
+      <p className="text-base md:text-lg text-gray-700 mb-6 md:mb-8">
+        Encontre oportunidades de peneiras perto de você.
+      </p>
 
-        <div className="mt-8 w-full max-w-xl">
-          <label
-            htmlFor="location"
-            className="block text-sm text-gray-600 mb-2"
-          >
-            Coloque sua localização
-          </label>
-          <div className="flex items-center border rounded-full px-4 py-2 shadow-sm bg-gray-100">
-            <input
-              id="location"
-              type="text"
-              placeholder="Ex: Av. Paulista n 433"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="flex-1 bg-transparent focus:outline-none text-gray-800 placeholder-gray-400"
+      <div className="mb-6 md:mb-8">
+        <input
+          type="text"
+          placeholder="Pesquisar por cidade..."
+          className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {filteredPeneiras.length > 0 ? (
+          filteredPeneiras.map(peneira => (
+            <PeneirasCard
+              key={peneira.id}
+              title={peneira.title}
+              date={peneira.date}
+              location={peneira.location}
+              requirements={peneira.requirements}
+              onDetailsClick={() => handleCardClick(peneira)}
+              link={peneira.link}
             />
-            {location && (
-              <button
-                onClick={() => setLocation("")}
-                className="text-red-500 font-bold text-lg"
-              >
-                ×
-              </button>
-            )}
-          </div>
-        </div>
+          ))
+        ) : (
+          <p className="text-gray-500 text-center col-span-full">Nenhuma peneira encontrada para sua pesquisa.</p>
+        )}
+      </div>
 
-        <div className="flex flex-col md:flex-row gap-6 mt-10">
-          <img
-            src={Peneira1} 
-            alt="Jogador em peneira"
-            className="w-64 h-40 object-cover rounded-lg shadow-md"
-          />
-          <img
-            src={Peneira2}
-            alt="Fila de jogadores"
-            className="w-64 h-40 object-cover rounded-lg shadow-md"
-          />
-        </div>
-
-        <p className="mt-10 text-xl text-gray-800 text-center">
-          Seja <span className="text-purple-700 font-bold">você</span> a próxima
-          Estrela do Brasil!
-        </p>
-      </main>
-
-      <Footer />
+      <PeneiraModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        peneira={selectedPeneira}
+      />
+      <br />
+      <Footer/>
     </div>
   );
-}
+};
+
+export default Peneiras;

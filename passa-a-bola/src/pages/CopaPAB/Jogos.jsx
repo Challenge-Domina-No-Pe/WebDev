@@ -1,1 +1,0 @@
-export default function Jogos() { return <h1 className="text-3xl font-bold">Jogos - Copa PAB</h1>; }

@@ -1,10 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut 
-} from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore"; 
 import { auth, db } from '../firebase/config';
 
@@ -16,18 +11,15 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser){
+      if (currentUser) {
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
-          setUser({
-            ...currentUser,
-            ...userDocSnap.data()
-          })
-        } else{
+          setUser({ ...currentUser, ...userDocSnap.data() });
+        } else {
           setUser(currentUser);
         }
-      } else{
+      } else {
         setUser(null);
       }
       setLoading(false);
@@ -38,43 +30,34 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const loggedInUser = userCredential.user;
-
     const userDocRef = doc(db, "users", loggedInUser.uid);
     const userDocSnap = await getDoc(userDocRef);
-
     if (userDocSnap.exists()) {
       setUser({ ...loggedInUser, ...userDocSnap.data() });
     } else {
       setUser(loggedInUser);
     }
-    
     return userCredential;
   };
   
   const signup = async (email, password, additionalData) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       email: email,
-      ...additionalData, 
+      ...additionalData,
     });
     setUser({ ...user, ...additionalData });
     return userCredential;
   };
 
   const logout = () => {
+    setUser(null); 
     return signOut(auth);
   };
 
-  const value = {
-    user,
-    loading,
-    login,
-    signup,
-    logout,
-  };
+  const value = { user, loading, login, signup, logout };
 
   return (
     <AuthContext.Provider value={value}>

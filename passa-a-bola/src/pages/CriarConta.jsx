@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContexts';
 import { useNavigate, Link } from 'react-router-dom';
-import logo from '../assets/Dominalogo.png'
+import logo from '../assets/Passalogo.png'
 
 export default function CriarConta() {
   const [email, setEmail] = useState('');
@@ -31,19 +31,16 @@ export default function CriarConta() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      {/* Logo */}
       <img 
         src={logo} 
         alt="Passa a Bola" 
         className="w-20 h-20 object-contain mb-6" 
       />
-      {/* Card do formulário */}
       <div className="bg-purple-200 shadow-lg rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-2xl font-bold text-center text-purple-600 mb-6">
           Criar Conta
         </h1>
 
-        {/* Exibe a mensagem de erro, se houver */}
         {error && <p className="bg-red-100 text-red-700 text-sm text-center p-3 rounded-lg mb-4">{error}</p>}
 
         <form onSubmit={handleSignup} className="space-y-4">

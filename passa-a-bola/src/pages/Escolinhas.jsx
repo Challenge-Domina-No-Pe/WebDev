@@ -1,19 +1,17 @@
 import { useState } from "react";
 import Footer from "../components/Footer";
-import logo from "../assets/Dominalogo.png";
+import logo from "../assets/Passalogo.png";
 
 export default function Escolinhas() {
   const [location, setLocation] = useState("");
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      {/* Conteúdo principal */}
       <main className="flex-grow flex flex-col items-center justify-start p-6">
-        {/* Logo e título */}
         <div className="flex flex-col items-center gap-4 mt-4">
           <img
             src={logo}
-            alt="Passa a Bola"
+            alt="Domina no pé"
             className="w-40"
           />
           <h2 className="text-2xl font-semibold text-gray-800 text-center">
@@ -21,7 +19,6 @@ export default function Escolinhas() {
           </h2>
         </div>
 
-        {/* Input de localização */}
         <div className="mt-8 w-full max-w-xl">
           <label
             htmlFor="location"
@@ -49,7 +46,6 @@ export default function Escolinhas() {
           </div>
         </div>
 
-        {/* Tabela de escolinhas */}
         <div className="mt-10 w-full max-w-4xl">
           <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
             Algumas escolinhas famosas:
@@ -98,7 +94,6 @@ export default function Escolinhas() {
         </div>
       </main>
 
-      {/* Rodapé */}
       <Footer />
     </div>
   );

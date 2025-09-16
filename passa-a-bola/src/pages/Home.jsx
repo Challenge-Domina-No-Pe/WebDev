@@ -1,58 +1,20 @@
-import { useState } from "react";
+import logo from "../assets/Passalogo.png"; 
+import Footer from "../components/Footer";  
+import yt from "../assets/yt.jpg"; 
+import insta from "../assets/insta.jpg"; 
 import { useAuth } from "../contexts/AuthContexts";
-import { getJogosApiFootball } from "../services/footballApi";
-import ListaDeJogos from "../components/ListaDeJogos";
-
-const LIGAS_DISPONIVEIS = [
-  {
-    id: '74',
-    season: '2023',
-    name: 'Brasileirão Feminino 2023',
-    description: 'Clique aqui para ver os últimos resultados da temporada.',
-  },
-  {
-    id: '699',
-    season: '2023',
-    name: "Women's Champions League 2023",
-    description: 'Clique para ver os resultados da principal competição europeia.',
-  },
-];
 
 export default function Home() {
-  const { user } = useAuth();
-  const [jogos, setJogos] = useState([]);
-  const [ligaAtivaId, setLigaAtivaId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleCardClick = (leagueId, season) => {
-    if (ligaAtivaId === leagueId) {
-      setLigaAtivaId(null);
-      setJogos([]);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setLigaAtivaId(leagueId);
-
-    getJogosApiFootball(leagueId, season)
-      .then(dados => {
-        const ultimosJogos = dados.slice(-15).reverse();
-        setJogos(ultimosJogos);
-      })
-      .catch(err => {
-        console.error(err);
-        setError("Não foi possível carregar os jogos. Verifique sua chave de API ou o plano de assinatura.");
-        setLigaAtivaId(null);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
+  
+    const { user } = useAuth();
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      <header className="flex items-center justify-center bg-white shadow-md py-4">
+        <img src={logo} alt="Passa a Bola" className="w-16 h-16 mr-3" />
+        <h1 className="text-2xl font-bold text-purple-800">PASSA A BOLA</h1>
+      </header><br></br>
+
       <div>
         <h1 className="text-3xl font-bold text-gray-800">
           Olá, {user?.username || 'Usuário'}!
@@ -62,25 +24,49 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {LIGAS_DISPONIVEIS.map((liga) => (
-          <div 
-            key={liga.id}
-            className="bg-purple-200 p-6 rounded-lg shadow-lg cursor-pointer hover:bg-purple-300 hover:shadow-xl transition-all duration-300"
-            onClick={() => handleCardClick(liga.id, liga.season)}
+      <main className="flex flex-1 items-center justify-center px-6 md:px-12 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start max-w-6xl w-full text-center">
+          <a
+            href="https://www.youtube.com/@passabola"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center hover:scale-105 transition-transform duration-300"
           >
-            <h2 className="text-xl font-bold text-purple-800">{liga.name}</h2>
-            <p className="text-purple-700 mt-1">{liga.description}</p>
-          </div>
-        ))}
-      </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 ">
+              Vem nos conhecer
+            </h2>
+            <img
+              src={yt}
+              alt="Canal do Passa a Bola no YouTube"
+              className="rounded-lg shadow-md w-full max-w-md mb-2 w-100 h-100"
+            />
+            <p className="text-gray-700">
+              Vem ver nosso canal do YouTube
+            </p>
+          </a>
 
-      <div className="mt-6 min-h-[100px]">
-        {isLoading && <div className="text-center p-10"><p className="font-semibold text-purple-700">Buscando resultados...</p></div>}
-        {error && <div className="text-center p-10 bg-red-100 rounded-lg"><p className="text-red-600 font-semibold">{error}</p></div>}
-        
-        {ligaAtivaId && !isLoading && <ListaDeJogos jogos={jogos} />}
-      </div>
+          <a
+            href="https://instagram.com/passaabola"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center hover:scale-105 transition-transform duration-300"
+          >
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Nosso Insta
+            </h2>
+            <img
+              src={insta}
+              alt="Instagram do Passa a Bola"
+              className="rounded-lg shadow-md w-full max-w-md mb-2 w-100 h-100"
+            />
+            <p className="text-gray-700">
+              Nosso Instagram tem as últimas notícias do mundo da bola feminina
+            </p>
+          </a>
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }

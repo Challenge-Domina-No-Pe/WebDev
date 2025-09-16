@@ -6,7 +6,7 @@ export default function ProtectedRoute({ children }) {
   const location = useLocation();
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <div>Verificando autenticação...</div>;
   }
 
   if (!user) {
@@ -14,4 +14,4 @@ export default function ProtectedRoute({ children }) {
   }
 
   return children;
-};
+}
