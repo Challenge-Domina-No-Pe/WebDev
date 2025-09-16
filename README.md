@@ -53,6 +53,8 @@ Para executar este projeto na sua máquina, siga os passos abaixo.
 2.  **Instale as dependências:**
     ```bash
     npm install
+    npm i react-router-dom
+    npm install lucide-react
     ```
 
 3.  **Configure as Variáveis de Ambiente:**
