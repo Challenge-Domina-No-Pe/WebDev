@@ -29,3 +29,31 @@ export async function getJogosApiFootball(leagueId, season) {
     return []; 
   }
 }
+
+// Função para buscar os últimos jogos de uma liga na TheSportsDB
+export async function getUltimosJogosDB(leagueId) {
+  const apiKey = import.meta.env.VITE_THESPORTSDB_KEY;
+  // Usando o endpoint correto para os últimos jogos finalizados
+  const url = `https://www.thesportsdb.com/api/v1/json/${apiKey}/eventspastleague.php?id=${leagueId}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    // Log para depuração: ver o que a API está realmente enviando
+    console.log("Dados recebidos da TheSportsDB:", data);
+
+    // A resposta pode estar em 'data.events' (futebol) ou 'data.results'
+    const jogos = data.events || data.results;
+
+    if (!jogos) {
+      console.warn("TheSportsDB não retornou eventos para esta consulta.");
+      return [];
+    }
+
+    return jogos;
+  } catch (error) {
+    console.error("Falha ao buscar dados da TheSportsDB:", error);
+    return [];
+  }
+}
