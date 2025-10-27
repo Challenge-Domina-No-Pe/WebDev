@@ -1,0 +1,81 @@
+{
+  "leagueName": "Brasileirão Feminino",
+  "leagueLogo": "https://media.api-sports.io/football/leagues/74.png",
+  "matches": [
+    {
+      "id": 1,
+      "date": "2025-10-25T19:00:00Z",
+      "home_team": {
+        "name": "Corinthians W",
+        "logo": "https://media.api-sports.io/football/teams/1798.png"
+      },
+      "away_team": {
+        "name": "Palmeiras W",
+        "logo": "https://media.api-sports.io/football/teams/9981.png"
+      },
+      "home_score": 2,
+      "away_score": 1,
+      "venue": "Neo Química Arena"
+    },
+    {
+      "id": 2,
+      "date": "2025-10-22T20:30:00Z",
+      "home_team": {
+        "name": "Ferroviária W",
+        "logo": "https://media.api-sports.io/football/teams/1795.png"
+      },
+      "away_team": {
+        "name": "Flamengo W",
+        "logo": "https://media.api-sports.io/football/teams/1794.png"
+      },
+      "home_score": 1,
+      "away_score": 1,
+      "venue": "Fonte Luminosa"
+    },
+    {
+      "id": 3,
+      "date": "2025-10-18T14:00:00Z",
+      "home_team": {
+        "name": "Santos W",
+        "logo": "https://media.api-sports.io/football/teams/1811.png"
+      },
+      "away_team": {
+        "name": "São Paulo W",
+        "logo": "https://media.api-sports.io/football/teams/9982.png"
+      },
+      "home_score": 0,
+      "away_score": 1,
+      "venue": "Vila Belmiro"
+    },
+    {
+      "id": 4,
+      "date": "2025-10-15T18:00:00Z",
+      "home_team": {
+        "name": "Internacional RS W",
+        "logo": "https://media.api-sports.io/football/teams/3826.png"
+      },
+      "away_team": {
+        "name": "Grêmio W",
+        "logo": "https://media.api-sports.io/football/teams/1817.png"
+      },
+      "home_score": 2,
+      "away_score": 2,
+      "venue": "Beira-Rio"
+    },
+    {
+      "id": 5,
+      "date": "2025-10-11T16:00:00Z",
+      "home_team": {
+        "name": "Cruzeiro W",
+        "logo": "https://media.api-sports.io/football/teams/9980.png"
+      },
+      "away_team": {
+        "name": "Atlético Mineiro W",
+        "logo": "https://media.api-sports.io/football/teams/18727.png"
+      },
+      "home_score": 1,
+      "away_score": 0,
+      "venue": "Mineirão"
+    }
+  ]
+}
