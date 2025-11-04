@@ -1,7 +1,6 @@
 // src/pages/CopaPAB/Competicao1/Times.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
 
-/* ----------------- Storage helpers ----------------- */
 const FALLBACK_TEAMS = {
   A: ["Time 1", "Time 2", "Time 3", "Time 4"],
   B: ["Time 5", "Time 6", "Time 7", "Time 8"],
@@ -42,8 +41,8 @@ const FALLBACK_MATCHES = {
     { id: 6, a: 1, b: 2, ga: "", gb: "" },
   ],
 };
-const FALLBACK_ROSTERS = {}; // { [teamName]: Player[] }
-const FALLBACK_LOGOS = {};   // { [teamName]: logoUrl }
+const FALLBACK_ROSTERS = {};
+const FALLBACK_LOGOS = {};
 
 const load = (key, fb) => {
   try {
@@ -59,27 +58,21 @@ const save = (key, val) => {
   } catch {}
 };
 
-/* ----------------- Stats a partir de partidas ----------------- */
 function computeTeamStats(groupTeams, groupMatches, teamIdx) {
   const name = groupTeams[teamIdx];
   let pts = 0, v = 0, e = 0, d = 0, gp = 0, gc = 0;
   const games = [];
-
   for (const m of groupMatches) {
     const isA = m.a === teamIdx;
     const isB = m.b === teamIdx;
     if (!isA && !isB) continue;
-
     const ga = m.ga === "" ? null : Number(m.ga);
     const gb = m.gb === "" ? null : Number(m.gb);
     const finished = ga !== null && gb !== null;
-
     const selfGoals = isA ? ga : gb;
-    const oppGoals  = isA ? gb : ga;
-    const opponent  = isA ? groupTeams[m.b] : groupTeams[m.a];
-
+    const oppGoals = isA ? gb : ga;
+    const opponent = isA ? groupTeams[m.b] : groupTeams[m.a];
     games.push({ id: m.id, opponent, self: selfGoals, opp: oppGoals, finished });
-
     if (!finished) continue;
     gp += selfGoals; gc += oppGoals;
     if (selfGoals > oppGoals) { v++; pts += 3; }
@@ -90,17 +83,11 @@ function computeTeamStats(groupTeams, groupMatches, teamIdx) {
   return { name, pts, v, e, d, gp, gc, sg, games };
 }
 
-/* ----------------- UI simples ----------------- */
 function TeamBadge({ name, logo }) {
   if (logo) {
     return <img src={logo} alt={name} className="w-10 h-10 rounded-full object-cover bg-white" />;
   }
-  const initials = name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((s) => s[0]?.toUpperCase())
-    .join("");
+  const initials = name.split(" ").filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase()).join("");
   return (
     <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold">
       {initials || "T"}
@@ -108,7 +95,6 @@ function TeamBadge({ name, logo }) {
   );
 }
 
-/* --- Modal compacto com scroll interno (85vh) --- */
 function Modal({ open, onClose, children }) {
   if (!open) return null;
   return (
@@ -143,31 +129,25 @@ function Field({ label, children }) {
   );
 }
 
-/* ------- util: ler arquivo como dataURL ------- */
 function readFileAsDataURL(file, cb) {
   const fr = new FileReader();
   fr.onload = () => cb(fr.result);
   fr.readAsDataURL(file);
 }
 
-/* ------- carrossel horizontal (drag + setas + snap) ------- */
 function HScroller({ children, className = "" }) {
   const ref = useRef(null);
-
   const scroll = (dx) => {
     const el = ref.current;
     if (!el) return;
     el.scrollBy({ left: dx, behavior: "smooth" });
   };
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
     let isDown = false;
     let startX = 0;
     let startScroll = 0;
-
     const onDown = (e) => {
       isDown = true;
       startX = (e.touches ? e.touches[0].pageX : e.pageX);
@@ -184,15 +164,12 @@ function HScroller({ children, className = "" }) {
       isDown = false;
       el.classList.remove("cursor-grabbing");
     };
-
     el.addEventListener("mousedown", onDown);
     el.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
-
     el.addEventListener("touchstart", onDown, { passive: true });
     el.addEventListener("touchmove", onMove, { passive: true });
     window.addEventListener("touchend", onUp);
-
     return () => {
       el.removeEventListener("mousedown", onDown);
       el.removeEventListener("mousemove", onMove);
@@ -202,7 +179,6 @@ function HScroller({ children, className = "" }) {
       window.removeEventListener("touchend", onUp);
     };
   }, []);
-
   return (
     <div className={"relative " + className}>
       <button
@@ -219,7 +195,6 @@ function HScroller({ children, className = "" }) {
       >
         ▶
       </button>
-
       <div
         ref={ref}
         className="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 pr-2 cursor-grab"
@@ -231,18 +206,16 @@ function HScroller({ children, className = "" }) {
   );
 }
 
-/* ----------------- Página ----------------- */
 export default function TimesCompeticao1() {
-  const [teams, setTeams]       = useState(() => load("c1-teams", FALLBACK_TEAMS));
-  const [matches, setMatches]   = useState(() => load("c1-matches", FALLBACK_MATCHES));
-  const [rosters, setRosters]   = useState(() => load("c1-rosters", FALLBACK_ROSTERS));
-  const [logos, setLogos]       = useState(() => load("c1-logos",   FALLBACK_LOGOS));
-  const [filter, setFilter]     = useState("ALL");
-  const [q, setQ]               = useState("");
-  const [openTeam, setOpenTeam] = useState(null); // {group, idx}
-  const [error, setError]       = useState("");
+  const [teams, setTeams] = useState(() => load("c1-teams", FALLBACK_TEAMS));
+  const [matches, setMatches] = useState(() => load("c1-matches", FALLBACK_MATCHES));
+  const [rosters, setRosters] = useState(() => load("c1-rosters", FALLBACK_ROSTERS));
+  const [logos, setLogos] = useState(() => load("c1-logos", FALLBACK_LOGOS));
+  const [filter, setFilter] = useState("ALL");
+  const [q, setQ] = useState("");
+  const [openTeam, setOpenTeam] = useState(null);
+  const [error, setError] = useState("");
 
-  // lista plana
   const all = useMemo(() => {
     const out = [];
     ["A", "B", "C", "D"].forEach((g) => {
@@ -257,12 +230,10 @@ export default function TimesCompeticao1() {
     return okGroup && okText;
   });
 
-  // abrir modal
   const openTeamModal = (t) => {
     setOpenTeam({ group: t.group, idx: t.idx });
   };
 
-  // stats do selecionado
   const sel = openTeam
     ? {
         name: teams[openTeam.group][openTeam.idx],
@@ -272,13 +243,11 @@ export default function TimesCompeticao1() {
       }
     : null;
 
-  /* ---------- salvar LS quando mudar ---------- */
   useEffect(() => save("c1-teams", teams), [teams]);
   useEffect(() => save("c1-matches", matches), [matches]);
   useEffect(() => save("c1-rosters", rosters), [rosters]);
   useEffect(() => save("c1-logos", logos), [logos]);
 
-  /* ---------- Cadastro de time ---------- */
   const [form, setForm] = useState({
     name: "",
     logo: "",
@@ -289,9 +258,7 @@ export default function TimesCompeticao1() {
     setError("");
     const g = form.group;
     const names = [...teams[g]];
-    // 1) placeholder "Time X" ou "—"
     let idx = names.findIndex((n) => /^time\s*\d+$/i.test(n) || n === "—");
-    // 2) se nenhum placeholder e grupo já começou, bloqueia
     const groupMatches = matches[g];
     const groupStarted = groupMatches.some((m) => m.ga !== "" || m.gb !== "");
     if (idx === -1) {
@@ -299,23 +266,18 @@ export default function TimesCompeticao1() {
         setError("Este grupo já começou. Não é possível cadastrar automaticamente.");
         return;
       }
-      idx = 0; // ainda não começou: substitui o primeiro
+      idx = 0;
     }
-
     const newNames = [...teams[g]];
     newNames[idx] = form.name;
-
     const newTeams = { ...teams, [g]: newNames };
     const newLogos = { ...logos, [form.name]: form.logo };
-
     setTeams(newTeams);
     setLogos(newLogos);
     setRosters((prev) => ({ ...prev, [form.name]: prev[form.name] || [] }));
-
     setForm({ name: "", logo: "", group: form.group });
   };
 
-  /* ---------- Remoção de time ---------- */
   const [removeForm, setRemoveForm] = useState({
     group: "A",
     teamName: "",
@@ -332,17 +294,14 @@ export default function TimesCompeticao1() {
     const g = removeForm.group;
     const name = removeForm.teamName;
     if (!name) return;
-
     const idx = (teams[g] || []).findIndex((n) => n === name);
     if (idx === -1) {
       setError("Não foi possível localizar o time selecionado.");
       return;
     }
-
     const newGroupArr = [...teams[g]];
     newGroupArr[idx] = "—";
     const newTeams = { ...teams, [g]: newGroupArr };
-
     let newRosters = rosters;
     let newLogos = logos;
     if (removeForm.alsoDelete) {
@@ -351,15 +310,12 @@ export default function TimesCompeticao1() {
       const { [name]: __, ...restL } = newLogos;
       newLogos = restL;
     }
-
     setTeams(newTeams);
     setRosters(newRosters);
     setLogos(newLogos);
-
     if (sel && sel.name === name) setOpenTeam(null);
   };
 
-  /* ---------- Renomear time ---------- */
   const [renameForm, setRenameForm] = useState({
     group: "A",
     teamName: "",
@@ -390,7 +346,6 @@ export default function TimesCompeticao1() {
       setError("Já existe um time com esse nome neste grupo.");
       return;
     }
-
     const idx = teams[g].findIndex((n) => n === oldName);
     if (idx === -1) {
       setError("Time não encontrado no grupo selecionado.");
@@ -399,10 +354,8 @@ export default function TimesCompeticao1() {
     const newGroupArr = [...teams[g]];
     newGroupArr[idx] = newName;
     const newTeams = { ...teams, [g]: newGroupArr };
-
     let newRosters = { ...rosters };
     let newLogos = { ...logos };
-
     if (renameForm.moveRoster && rosters[oldName]) {
       newRosters[newName] = rosters[oldName];
       delete newRosters[oldName];
@@ -411,20 +364,14 @@ export default function TimesCompeticao1() {
       newLogos[newName] = logos[oldName];
       delete newLogos[oldName];
     }
-
     setTeams(newTeams);
     setRosters(newRosters);
     setLogos(newLogos);
-
-    if (openTeam && openTeam.group === g && teams[g][openTeam.idx] === oldName) {
-      // continua no mesmo índice
-    }
-
+    if (openTeam && openTeam.group === g && teams[g][openTeam.idx] === oldName) {}
     setRenameForm((f) => ({ ...f, newName: "" }));
     setError("");
   };
 
-  /* ---------- Trocar vagas (swap) ---------- */
   const [swapForm, setSwapForm] = useState({
     group: "A",
     i1: 0,
@@ -436,7 +383,6 @@ export default function TimesCompeticao1() {
     const arr = [...(teams[g] || [])];
     const n = arr.length;
     const { i1, i2 } = swapForm;
-
     if (i1 === i2) {
       setError("Selecione índices diferentes para trocar.");
       return;
@@ -445,13 +391,13 @@ export default function TimesCompeticao1() {
       setError("Índices fora do intervalo.");
       return;
     }
-
     [arr[i1], arr[i2]] = [arr[i2], arr[i1]];
     setTeams((t) => ({ ...t, [g]: arr }));
     setError("");
   };
 
-  /* ---------- Elenco (CRUD) ---------- */
+  const RATE_FIELDS = new Set(["ritmo","chute","passe","drible","defesa","fisico","gols","assistencias"]);
+
   const addPlayer = () => {
     if (!sel) return;
     const key = sel.name;
@@ -464,9 +410,16 @@ export default function TimesCompeticao1() {
       gols: 0,
       assistencias: 0,
       bio: "",
+      ritmo: 50,
+      chute: 50,
+      passe: 50,
+      drible: 50,
+      defesa: 50,
+      fisico: 50,
     };
     setRosters((r) => ({ ...r, [key]: [...(r[key] || []), p] }));
   };
+
   const updatePlayer = (pid, field, value) => {
     if (!sel) return;
     const key = sel.name;
@@ -474,11 +427,17 @@ export default function TimesCompeticao1() {
       ...r,
       [key]: (r[key] || []).map((pl) =>
         pl.id === pid
-          ? { ...pl, [field]: field === "gols" || field === "assistencias" ? Number(value || 0) : value }
+          ? {
+              ...pl,
+              [field]: RATE_FIELDS.has(field)
+                ? Math.max(0, Math.min(99, Number(value || 0)))
+                : value
+            }
           : pl
       ),
     }));
   };
+
   const removePlayer = (pid) => {
     if (!sel) return;
     const key = sel.name;
@@ -487,19 +446,18 @@ export default function TimesCompeticao1() {
       [key]: (r[key] || []).filter((pl) => pl.id !== pid),
     }));
   };
+
   const uploadPlayerPhoto = (pid, file) => {
     if (!file || !sel) return;
     readFileAsDataURL(file, (dataUrl) => updatePlayer(pid, "foto", dataUrl));
   };
 
-  // atalhos posição
   const POS_SHORTCUTS = ["GOL", "ZAG", "LAT", "VOL", "MEI", "PON", "ATA"];
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-black mb-4">Times • Competição 1</h1>
 
-      {/* Cadastro de time */}
       <div className="mb-6 rounded-2xl border bg-gray-50 p-4">
         <h2 className="font-semibold mb-3">Cadastrar novo time</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -545,11 +503,9 @@ export default function TimesCompeticao1() {
         {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
       </div>
 
-      {/* Gerenciar / Remover / Renomear / Swap */}
       <div className="mb-6 rounded-2xl border bg-gray-50 p-4">
         <h2 className="font-semibold mb-4">Gerenciar times</h2>
 
-        {/* linha 1: remover */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
           <Field label="Grupo (remover)">
             <select
@@ -601,7 +557,6 @@ export default function TimesCompeticao1() {
 
         <hr className="my-4" />
 
-        {/* linha 2: renomear */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
           <Field label="Grupo (renomear)">
             <select
@@ -672,7 +627,6 @@ export default function TimesCompeticao1() {
 
         <hr className="my-4" />
 
-        {/* linha 3: swap */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
           <Field label="Grupo (trocar vagas)">
             <select
@@ -723,7 +677,6 @@ export default function TimesCompeticao1() {
         {error && <p className="text-red-600 mt-3 text-sm">{error}</p>}
       </div>
 
-      {/* Filtros */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <div className="flex gap-2">
           {["ALL", "A", "B", "C", "D"].map((g) => (
@@ -759,7 +712,6 @@ export default function TimesCompeticao1() {
         </div>
       </div>
 
-      {/* Grade de times */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {filtered.map((t) => (
           <button
@@ -774,20 +726,14 @@ export default function TimesCompeticao1() {
                 <div className="text-white/80 text-sm">Grupo {t.group}</div>
               </div>
             </div>
-
-            {/* mini-resumo */}
-            <MiniSummary
-              stats={computeTeamStats(teams[t.group], matches[t.group], t.idx)}
-            />
+            <MiniSummary stats={computeTeamStats(teams[t.group], matches[t.group], t.idx)} />
           </button>
         ))}
       </div>
 
-      {/* Modal do time */}
       <Modal open={!!openTeam} onClose={() => setOpenTeam(null)}>
         {sel && (
           <div>
-            {/* header */}
             <div className="flex items-center gap-4 mb-4">
               <TeamBadge name={sel.name} logo={sel.logo} />
               <div className="flex-1">
@@ -814,7 +760,6 @@ export default function TimesCompeticao1() {
               </div>
             </div>
 
-            {/* remover direto do modal */}
             <div className="mb-4">
               <button
                 className="px-3 py-2 rounded-lg bg-red-600 text-white text-sm"
@@ -831,7 +776,6 @@ export default function TimesCompeticao1() {
               </button>
             </div>
 
-            {/* stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               <BigStat label="Pontos" value={sel.stats.pts} />
               <BigStat label="Vitórias" value={sel.stats.v} />
@@ -843,7 +787,6 @@ export default function TimesCompeticao1() {
               <BigStat label="Jogos" value={sel.stats.v + sel.stats.e + sel.stats.d} />
             </div>
 
-            {/* elenco */}
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-semibold">Elenco</h3>
               <button
@@ -860,7 +803,6 @@ export default function TimesCompeticao1() {
               </div>
             )}
 
-            {/* Cartas em CARROSSEL */}
             <HScroller className="mb-2">
               {sel.roster.map((p) => (
                 <div
@@ -868,7 +810,6 @@ export default function TimesCompeticao1() {
                   className="snap-start w-[360px] min-w-[360px] shrink-0 rounded-2xl border bg-gray-50 overflow-hidden"
                 >
                   <div className="p-3 flex items-start gap-3">
-                    {/* Foto mais compacta */}
                     <div className="relative shrink-0">
                       <img
                         src={p.foto || "https://via.placeholder.com/160x200"}
@@ -886,7 +827,6 @@ export default function TimesCompeticao1() {
                       </label>
                     </div>
 
-                    {/* Infos principais compactas */}
                     <div className="flex-1 space-y-2">
                       <div className="grid grid-cols-2 gap-2">
                         <Field label="Nome">
@@ -949,6 +889,69 @@ export default function TimesCompeticao1() {
                         </Field>
                       </div>
 
+                      <div className="grid grid-cols-3 gap-2">
+                        <Field label="Ritmo">
+                          <input
+                            type="number"
+                            min={0}
+                            max={99}
+                            className="w-full rounded-lg border px-2 py-1 text-sm"
+                            value={p.ritmo ?? 50}
+                            onChange={(e) => updatePlayer(p.id, "ritmo", e.target.value)}
+                          />
+                        </Field>
+                        <Field label="Chute">
+                          <input
+                            type="number"
+                            min={0}
+                            max={99}
+                            className="w-full rounded-lg border px-2 py-1 text-sm"
+                            value={p.chute ?? 50}
+                            onChange={(e) => updatePlayer(p.id, "chute", e.target.value)}
+                          />
+                        </Field>
+                        <Field label="Passe">
+                          <input
+                            type="number"
+                            min={0}
+                            max={99}
+                            className="w-full rounded-lg border px-2 py-1 text-sm"
+                            value={p.passe ?? 50}
+                            onChange={(e) => updatePlayer(p.id, "passe", e.target.value)}
+                          />
+                        </Field>
+                        <Field label="Drible">
+                          <input
+                            type="number"
+                            min={0}
+                            max={99}
+                            className="w-full rounded-lg border px-2 py-1 text-sm"
+                            value={p.drible ?? 50}
+                            onChange={(e) => updatePlayer(p.id, "drible", e.target.value)}
+                          />
+                        </Field>
+                        <Field label="Defesa">
+                          <input
+                            type="number"
+                            min={0}
+                            max={99}
+                            className="w-full rounded-lg border px-2 py-1 text-sm"
+                            value={p.defesa ?? 50}
+                            onChange={(e) => updatePlayer(p.id, "defesa", e.target.value)}
+                          />
+                        </Field>
+                        <Field label="Físico">
+                          <input
+                            type="number"
+                            min={0}
+                            max={99}
+                            className="w-full rounded-lg border px-2 py-1 text-sm"
+                            value={p.fisico ?? 50}
+                            onChange={(e) => updatePlayer(p.id, "fisico", e.target.value)}
+                          />
+                        </Field>
+                      </div>
+
                       <Field label="Foto (URL)">
                         <input
                           className="w-full rounded-lg border px-2 py-1 text-sm"
@@ -984,7 +987,6 @@ export default function TimesCompeticao1() {
               Dica: arraste para o lado, use a barra de rolagem ou as setas (desktop).
             </div>
 
-            {/* partidas do time no grupo */}
             <h3 className="font-semibold mt-6 mb-2">Partidas no grupo</h3>
             <div className="space-y-2">
               {sel.stats.games.map((g) => (
@@ -1013,7 +1015,6 @@ export default function TimesCompeticao1() {
   );
 }
 
-/* ------ pequenos componentes ------ */
 function MiniSummary({ stats }) {
   return (
     <div className="grid grid-cols-7 gap-2 text-xs text-white/90">
